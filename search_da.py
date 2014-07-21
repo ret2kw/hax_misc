@@ -4,15 +4,15 @@ import sys
 
 
 client = msfrpc.Msfrpc({})
-client.login('msf', '<insert_pass>')
+client.login('msf', sys.argv[1])
 res = client.call('console.create')
 cid = res['id']
 
 
-rhosts = [line.rstrip() for line in open(sys.argv[1], 'r')]
+rhosts = [line.rstrip() for line in open(sys.argv[2], 'r')]
 rhosts = ' ,'.join(rhosts)
 
-match = unicode(sys.argv[2])
+match = unicode(sys.argv[3])
 
 cmd = """use auxiliary/scanner/smb/smb_enumusers_domain
 set RHOSTS %s
