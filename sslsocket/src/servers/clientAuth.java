@@ -184,9 +184,6 @@ public class clientAuth {
 			        "SSL_RSA_WITH_3DES_EDE_CBC_SHA",
 			        "SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA",
 			        "SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA",
-			        "SSL_RSA_WITH_DES_CBC_SHA",
-			        "SSL_DHE_RSA_WITH_DES_CBC_SHA",
-			        "SSL_DHE_DSS_WITH_DES_CBC_SHA",
 			        });
 			
 			BufferedWriter w = new BufferedWriter(new OutputStreamWriter(c.getOutputStream()));
