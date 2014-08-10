@@ -55,7 +55,7 @@ public class clientAuth {
 			
 			//create our custom TrustManager for cert pinning
 			TrustManager[] myTMs = new TrustManager [] {
-                    new MyX509TrustManager() };
+					new MyX509TrustManager() };
 			
 			SSLContext sc = SSLContext.getInstance("TLS");
 			//initialize the SSLContext with the keymanager (server certs) and our custom Trustmanager for cert pinning
@@ -85,22 +85,16 @@ public class clientAuth {
 			BufferedWriter w = new BufferedWriter(new OutputStreamWriter(c.getOutputStream()));
 			
 			String m = "[*] Authenticated your certificate, Welcome to the NCC Test SSL Socket Server";
-		         w.write(m,0,m.length());
-		         w.newLine();
-		         w.flush();
-		         
-		    System.out.println("[*] Done serving, shutting down");
-		
-		//Catch any handshake errors as it means we failed Auth         
-		}catch (CertificateException e) {
-			
-			System.out.println(e.toString());
-			
-			System.out.println("[*] Failed Auth");
-		
+			w.write(m,0,m.length());
+			w.newLine();
+			w.flush();
+		    
+			c.close();
+			System.out.println("[*] Done serving, shutting down");
+				
 		//we hit this when the certificate validation fails
-		}catch (SSLHandshakeException e) {
-			
+		}catch (SSLHandshakeException e) 
+		{	
 			Exception cause = (Exception) e.getCause();
 			
 			if (cause instanceof CertificateException)
@@ -111,13 +105,12 @@ public class clientAuth {
 				System.out.println("[*] Failed Auth, client did not present any certificate");
 			}
 		         
-		}catch (Exception e) {
-			
-			
-	        System.err.println("[*] Exception in socketcreation " + e.toString());
-	      }	
-		
+		}catch (Exception e) 
+		{		
+			System.err.println("[*] Exception in socketcreation " + e.toString());
+		}	
 	}
+	
 	
 	private static byte[] getFingerprint()
 	{
@@ -154,13 +147,14 @@ public class clientAuth {
 		MessageDigest md;
 		try {
 			md = MessageDigest.getInstance("SHA-256");
-		    md.reset();
+			md.reset();
 		    fingerPrint = md.digest(cert.getEncoded());
 		    
 		    System.out.println("[*] Client Certificate Fingerprint:\t" + DatatypeConverter.printHexBinary(fingerPrint));
 		    System.out.println("[*] Allowed Certificate Fingerprint:\t" + DatatypeConverter.printHexBinary(allowedFinger));
 		    
-		}catch (Exception e) {
+		}catch (Exception e) 
+		{
 			e.printStackTrace();
 		}
 		    //see if the cert fingerprints match
@@ -169,9 +163,9 @@ public class clientAuth {
 		    	System.out.println("[*] Fingerprints matched!!!!!");
 		    	return true;
 		    	
-		    } else {
+		    } else 
+		    {
 		    	throw new CertificateException("client certificate with unknown fingerprint: " + cert.getSubjectDN());
-		    	
 		    }
 	}
 	
@@ -199,10 +193,10 @@ public class clientAuth {
 	        for (int i = 0; i < tms.length; i++)
 	        {
 	        	if (tms[i] instanceof X509TrustManager) 
-	            {
+	        	{
 	        		pkixTrustManager = (X509TrustManager) tms[i];
-	                return;
-	            }
+	        		return;
+	        	}
 	        }
 
 	         /*
@@ -230,6 +224,4 @@ public class clientAuth {
 	         return pkixTrustManager.getAcceptedIssuers();
 	     }
 	}
-		
-
 }
