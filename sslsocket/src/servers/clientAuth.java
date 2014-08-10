@@ -72,6 +72,7 @@ public class clientAuth {
 			SSLServerSocket s = (SSLServerSocket) ssf.createServerSocket(443);
 			//we require client certificates
 			s.setNeedClientAuth(true);
+			System.out.println("[*] Waiting for connection");
 			//accept a connection
 			SSLSocket c = (SSLSocket) s.accept();
 	
@@ -162,13 +163,12 @@ public class clientAuth {
 		}
 		
 		fingerPrint = md.digest(cert.getEncoded());
-		md.reset();
 	    
 		System.out.println("[*] Client Certificate Fingerprint:\t" + DatatypeConverter.printHexBinary(fingerPrint));
 		System.out.println("[*] Allowed Certificate Fingerprint:\t" + DatatypeConverter.printHexBinary(allowedFinger));
 		    
 		//see if the cert fingerprints match
-		if (md.isEqual(fingerPrint, allowedFinger))
+		if (MessageDigest.isEqual(fingerPrint, allowedFinger))
 		{
 			System.out.println("[*] Fingerprints matched!!!!!");
 			return true;	
