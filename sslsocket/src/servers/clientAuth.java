@@ -3,6 +3,7 @@ package servers;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.SocketAddress;
 import java.security.KeyStore;
@@ -30,7 +31,6 @@ import javax.xml.bind.DatatypeConverter;
 
 public class clientAuth {
 
-	static X509TrustManager pkixTrustManager = null;
 	static FileInputStream is = null;
 	static CertificateFactory certFactory = null;
 	static X509Certificate cert = null;
@@ -40,6 +40,7 @@ public class clientAuth {
 	public static void main(String[] args) 
 	{
 		//Create KeyStore and SSL Socket Server
+		SSLSocket c = null;
 		try {
 			
 			//password for keystore
@@ -74,7 +75,7 @@ public class clientAuth {
 			s.setNeedClientAuth(true);
 			System.out.println("[*] Waiting for connection");
 			//accept a connection
-			SSLSocket c = (SSLSocket) s.accept();
+			c = (SSLSocket) s.accept();
 	
 			//http://stackoverflow.com/questions/10687200/java-7-and-could-not-generate-dh-keypair
 			//This is mainly a fix for working with openssl s_client
@@ -117,11 +118,20 @@ public class clientAuth {
 		}catch (Exception e) 
 		{		
 			System.err.println("[*] Exception in socketcreation " + e.toString());
-		}	
+		}finally
+		{
+			try {
+				c.close();
+				System.out.println("[*] Socket shutdown");
+			} catch (IOException e) {
+				System.out.println("[*] Error Socket was never created");
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	
-	private static byte[] getFingerprint()
+	private static byte[] getFingerprint() throws CertificateException
 	{
 		try {
 			is = new FileInputStream(clientCert);
@@ -141,9 +151,10 @@ public class clientAuth {
 	
 		}catch (Exception e) {
 			System.err.println(e.toString());
-			return null;
+			throw new CertificateException("Error getting the allowed certificate");
       }
 	}
+	
 	
 	private static boolean checkFingerprint(X509Certificate[] chain) throws CertificateException
 	{
@@ -180,6 +191,8 @@ public class clientAuth {
 	
 	//http://docs.oracle.com/javase/7/docs/technotes/guides/security/jsse/JSSERefGuide.html#X509TrustManager
 	public static class FingerprintManager implements X509TrustManager {
+		
+		static X509TrustManager pkixTrustManager = null;
 		
 		private FingerprintManager() throws Exception {
 			// create a "default" JSSE X509TrustManager so we can call it for stuff we don't implement
