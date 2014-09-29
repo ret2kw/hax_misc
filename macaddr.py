@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
     for num in xrange(1,36):
         ip = '10.110.1.' + str(num)
-        threads.append(mac_getter(ip, macdb))
+        threads.append(mac_getter(ip, macdb, username, passwd))
 
     for t in threads:
         t.start()
