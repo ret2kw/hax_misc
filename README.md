@@ -2,6 +2,11 @@ hax_misc
 ========
 
 Collection of random scripts written hastily while on various gigs
+###macaddr###
+Really crappy script to login to a bunch of cisco switches to find mac addresses, there is a solarwinds tool that does this better. This just telnets in and runs sh mac-address-table
+
+###sslsocket###
+Me playing around with doing client certificate pinning in Java...nothing to see here....
 
 
 
